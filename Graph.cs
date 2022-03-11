@@ -7,40 +7,40 @@ namespace Graphs
     public class Vertex
     {
         public Vector2 Coordinates { get; set; }
-        public readonly int vertexID;
-        public List<int> edges;
-        public Vertex(Vector2 coords, int ID)
+        public List<Vector2> edges;
+        public int vertexID;
+        public Vertex(Vector2 coords, int id)
         {
             Coordinates = coords;
-            vertexID = ID;
-            edges = new List<int>();
+            edges = new List<Vector2>();
+            vertexID = id;
         }
         public void Link(Vertex vertexArgument)
         {
-            if (!vertexArgument.edges.Contains(vertexID))
+            if (!vertexArgument.edges.Contains(Coordinates))
             {
-                edges.Add(vertexArgument.vertexID);
-                vertexArgument.edges.Add(vertexID);
+                edges.Add(vertexArgument.Coordinates);
+                vertexArgument.edges.Add(Coordinates);
             }
         }
         public void UnLink(Vertex vertexArgument)
         {
-            edges.Remove(vertexArgument.vertexID);
-            vertexArgument.edges.Remove(vertexID);
+            edges.Remove(vertexArgument.Coordinates);
+            vertexArgument.edges.Remove(Coordinates);
         }
     }
     public class Graph: IEnumerable<Vertex>
     {
-        public Dictionary<int, Vertex> vertices;
+        public Dictionary<Vector2, Vertex> vertices;
         private int NextID { get; set; }
 
         public Graph()
         {
-            vertices = new Dictionary<int, Vertex>();
+            vertices = new Dictionary<Vector2, Vertex>();
             NextID = 0;
         }
 
-        public bool Link(int firstEdge, int secondEdge)
+        public bool Link(Vector2 firstEdge, Vector2 secondEdge)
         {
             if (vertices.ContainsKey(firstEdge) && vertices.ContainsKey(secondEdge))
             {
@@ -51,40 +51,30 @@ namespace Graphs
             }
             return false;
         }
-        public bool Unlink(int a, int b)
+        public bool Unlink(Vector2 firstEdge, Vector2 secondEdge)
         {
-            if (vertices.ContainsKey(a) && vertices.ContainsKey(b))
+            if (vertices.ContainsKey(firstEdge) && vertices.ContainsKey(secondEdge))
             {
-                Vertex from = vertices[a];
-                Vertex to = vertices[b];
+                Vertex from = vertices[firstEdge];
+                Vertex to = vertices[secondEdge];
                 from.UnLink(to);
                 return true;
             }
             return false;
         }
-        public int Add(Vector2 value)
+        public void Add(Vector2 coords)
         {
-            vertices[NextID] = new Vertex(value, NextID);
-            int temp = NextID;
+            vertices[coords] = new Vertex(coords, NextID);
             NextID++;
-            return temp;
         } 
-        public void RemoveAtIndex(int removedIndex)
+
+        public Vertex FindID(int id)
         {
-            if (vertices.ContainsKey(removedIndex))
+            foreach (var item in vertices.Values)
             {
-                vertices.Remove(removedIndex);
-                if (removedIndex != vertices.Count - 1)
-                {
-                    vertices.Add(removedIndex, vertices[removedIndex + 1]);
-                    for (int i = removedIndex + 1; i < vertices.Count - 1; i++)
-                    {
-                        vertices[i] = vertices[i + 1];
-                    }
-                    vertices.Remove(vertices.Count - 1);
-                }
-                NextID--;
+                if (item.vertexID == id) return item;
             }
+            return null;
         }
 
         public IEnumerator<Vertex> GetEnumerator()
@@ -140,12 +130,12 @@ namespace Graphs
         {
             if (currentVertex == null)
             {
-                currentVertex = currentGraph.vertices[0];
+                currentVertex = currentGraph.FindID(0);
                 return true;
             }
-            else if (currentVertex.vertexID < currentGraph.vertices.Count - 1) 
+            if (currentVertex.vertexID < currentGraph.vertices.Count - 1) 
             {
-                currentVertex = currentGraph.vertices[currentVertex.vertexID + 1];
+                currentVertex = currentGraph.FindID(currentVertex.vertexID + 1);
                 return true;
             }
             return false;
