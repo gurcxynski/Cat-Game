@@ -9,15 +9,13 @@ namespace Cat
     {
         public static int hexes = 9;
         public static Graph gameBoard = new Graph();
-        public static readonly Cat cat = new Cat();
+        public static Cat cat = new Cat();
     }
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        
-        SpriteFont font;
         Texture2D hex;
         Texture2D cat;
         readonly Scene scene = new Scene();
@@ -47,7 +45,6 @@ namespace Cat
             spriteBatch = new SpriteBatch(GraphicsDevice);
             hex = Content.Load<Texture2D>("hex");
             cat = Content.Load<Texture2D>("cat");
-            font = Content.Load<SpriteFont>("fonts/MarkerFelt-16");
         }
 
         protected override void Update(GameTime gameTime)

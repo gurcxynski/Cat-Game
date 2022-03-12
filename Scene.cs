@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using MonoGame.EasyInput;
 using System;
+using Graphs;
 
 namespace Cat
 {
@@ -10,8 +11,10 @@ namespace Cat
 
         public Scene()
         {
-
-
+            Initialize();
+        }
+        public void Initialize()
+        {
             for (int i = 0; i < Globals.hexes; i++)
             {
                 for (int j = 0; j < Globals.hexes; j++)
@@ -50,12 +53,8 @@ namespace Cat
             for (int i = 0; i < rand.Next(3, 10); i++)
             {
                 Globals.gameBoard.Deactivate(Globals.gameBoard.vertices[new Vector2(rand.Next(0, Globals.hexes), rand.Next(0, Globals.hexes))]);
-                
+
             }
-
-
-            
-
         }
         public void Update()
         {
@@ -71,8 +70,12 @@ namespace Cat
                     }
                 }
             }
-
-
+            if (Globals.cat.Position == new Vector2(-10, -10))
+            {
+                Globals.gameBoard = new Graph();
+                Initialize();
+                Globals.cat = new Cat();
+            }
         }
     }
 }
