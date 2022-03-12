@@ -4,31 +4,6 @@ using System.Collections.Generic;
 
 namespace Graphs
 {
-    public class Vertex
-    {
-        public Vector2 Coordinates { get; set; }
-        public List<Vector2> edges;
-        public int vertexID;
-        public Vertex(Vector2 coords, int id)
-        {
-            Coordinates = coords;
-            edges = new List<Vector2>();
-            vertexID = id;
-        }
-        public void Link(Vertex vertexArgument)
-        {
-            if (!vertexArgument.edges.Contains(Coordinates))
-            {
-                edges.Add(vertexArgument.Coordinates);
-                vertexArgument.edges.Add(Coordinates);
-            }
-        }
-        public void UnLink(Vertex vertexArgument)
-        {
-            edges.Remove(vertexArgument.Coordinates);
-            vertexArgument.edges.Remove(Coordinates);
-        }
-    }
     public class Graph: IEnumerable<Vertex>
     {
         public Dictionary<Vector2, Vertex> vertices;
@@ -58,9 +33,18 @@ namespace Graphs
                 Vertex from = vertices[firstEdge];
                 Vertex to = vertices[secondEdge];
                 from.UnLink(to);
+                to.UnLink(from);
                 return true;
             }
             return false;
+        }
+        public void UnlinkAll(Vertex edge)
+        {
+            edge.edges.Clear();
+            foreach (var item in vertices.Values)
+            {
+                item.UnLink(edge);
+            }
         }
         public void Add(Vector2 coords)
         {

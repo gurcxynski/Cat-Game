@@ -53,7 +53,7 @@ namespace Cat
 
         protected override void Update(GameTime gameTime)
         {
-
+            scene.Update();
             base.Update(gameTime);
         }
         protected override void Draw(GameTime gameTime)
@@ -64,15 +64,9 @@ namespace Cat
 
             foreach (var item in Globals.gameBoard.vertices.Values)
             {
-                Vector2 drawnPos = new Vector2(
-                    item.Coordinates.X * 50 + (item.Coordinates.Y % 2 == 0 ? 15 : 40),
-                    item.Coordinates.Y * 40 + 20);
+                spriteBatch.Draw(hex, item.drawnPos, (item.GetStatus() ? Color.Green : Color.Red));
 
-
-                spriteBatch.Draw(hex, drawnPos, Color.Green);
-
-
-                spriteBatch.DrawString(font, item.edges.Count.ToString(), drawnPos, Color.Black);
+                spriteBatch.DrawString(font, item.edges.Count.ToString(), item.drawnPos, Color.Black);
 
             }
 
