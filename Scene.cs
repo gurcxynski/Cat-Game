@@ -35,6 +35,27 @@ namespace Cat
                 }
             }
 
+            Globals.gameBoard.Add(new Vector2(-10, -10));
+
+            foreach (var item in Globals.gameBoard)
+            {
+                if (item.Coordinates.X == 0 || item.Coordinates.Y == 0 || item.Coordinates.X == Globals.hexes - 1 || item.Coordinates.Y == Globals.hexes - 1)
+                {
+                    Globals.gameBoard.Link(item.Coordinates, new Vector2(-10, -10));
+                }
+            }
+
+            Random rand = new Random();
+
+            for (int i = 0; i < rand.Next(3, 10); i++)
+            {
+                Globals.gameBoard.Deactivate(Globals.gameBoard.vertices[new Vector2(rand.Next(0, Globals.hexes), rand.Next(0, Globals.hexes))]);
+                
+            }
+
+
+            
+
         }
         public void Update()
         {
@@ -45,8 +66,8 @@ namespace Cat
                 {
                     if (item.IsInside(new Vector2(mouse.Position.X, mouse.Position.Y)))
                     {
-                        Globals.gameBoard.UnlinkAll(item);
-                        item.Deactivate();
+                        Globals.gameBoard.Deactivate(item);
+                        Globals.cat.Jump();
                     }
                 }
             }

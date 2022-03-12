@@ -7,9 +7,9 @@ namespace Cat
 {
     public static class Globals
     {
-        public static int hexes = 10;
-        public static Vector2 catPosition = new Vector2(hexes / 2, hexes / 2);
+        public static int hexes = 9;
         public static Graph gameBoard = new Graph();
+        public static readonly Cat cat = new Cat();
     }
     public class Game1 : Game
     {
@@ -20,8 +20,7 @@ namespace Cat
         SpriteFont font;
         Texture2D hex;
         Texture2D cat;
-
-        Scene scene = new Scene();
+        readonly Scene scene = new Scene();
 
         public Game1()
         {
@@ -33,8 +32,8 @@ namespace Cat
         {
             IsMouseVisible = true;
 
-            graphics.PreferredBackBufferHeight = 40 + Globals.hexes * 40;
-            graphics.PreferredBackBufferWidth = 50 + Globals.hexes * 50;
+            graphics.PreferredBackBufferHeight = 10 + Globals.hexes * 40;
+            graphics.PreferredBackBufferWidth = 25 + Globals.hexes * 50;
             graphics.ApplyChanges();
 
 
@@ -65,19 +64,9 @@ namespace Cat
             foreach (var item in Globals.gameBoard.vertices.Values)
             {
                 spriteBatch.Draw(hex, item.drawnPos, (item.GetStatus() ? Color.Green : Color.Red));
-
-                spriteBatch.DrawString(font, item.edges.Count.ToString(), item.drawnPos, Color.Black);
-
             }
 
-            spriteBatch.Draw(cat, new Vector2(
-                Globals.catPosition.X * 50 + (Globals.catPosition.Y % 2 == 0 ? 30 : 45),  
-                Globals.catPosition.Y * 40 + 25),
-                Color.White);
-
-
-
-
+            spriteBatch.Draw(cat, Globals.cat.drawnPos,Color.White);
 
             spriteBatch.End();
 

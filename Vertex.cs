@@ -57,7 +57,7 @@ namespace Graphs
         {
             return active;
         }
-        public void Deactivate()
+        public void TurnOff()
         {
             active = false;
         }

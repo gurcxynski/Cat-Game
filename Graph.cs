@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections;
 using System.Collections.Generic;
+using Cat; 
 
 namespace Graphs
 {
@@ -38,13 +39,15 @@ namespace Graphs
             }
             return false;
         }
-        public void UnlinkAll(Vertex edge)
+        public void Deactivate(Vertex edge)
         {
+            if (edge.Coordinates == Globals.cat.Position) return;
             edge.edges.Clear();
             foreach (var item in vertices.Values)
             {
                 item.UnLink(edge);
             }
+            edge.TurnOff();
         }
         public void Add(Vector2 coords)
         {
