@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Cat;
+using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 
 namespace Graphs
@@ -62,5 +64,9 @@ namespace Graphs
             active = false;
         }
 
+        public bool isAvailable()
+        {
+            return active && Globals.cat.Position != Coordinates;
+        }
     }
 }

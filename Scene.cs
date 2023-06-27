@@ -63,10 +63,11 @@ namespace Cat
             {
                 foreach (var item in Globals.gameBoard.vertices.Values)
                 {
-                    if (item.IsInside(new Vector2(mouse.Position.X, mouse.Position.Y)))
+                    if (item.isAvailable() && item.IsInside(new Vector2(mouse.Position.X, mouse.Position.Y)))
                     {
                         Globals.gameBoard.Deactivate(item);
                         Globals.cat.Jump();
+                        break;
                     }
                 }
             }
