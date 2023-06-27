@@ -8,8 +8,8 @@ namespace Cat
     public static class Globals
     {
         public static int hexes = 9;
-        public static Graph gameBoard = new Graph();
-        public static Cat cat = new Cat();
+        public static Graph gameBoard = new();
+        public static Cat cat = new();
     }
     public class Game1 : Game
     {
@@ -18,7 +18,7 @@ namespace Cat
 
         Texture2D hex;
         Texture2D cat;
-        readonly Scene scene = new Scene();
+        readonly Scene scene = new();
 
         public Game1()
         {
@@ -33,9 +33,6 @@ namespace Cat
             graphics.PreferredBackBufferHeight = 10 + Globals.hexes * 40;
             graphics.PreferredBackBufferWidth = 25 + Globals.hexes * 50;
             graphics.ApplyChanges();
-
-
-
 
             base.Initialize();
 
@@ -60,10 +57,10 @@ namespace Cat
 
             foreach (var item in Globals.gameBoard.vertices.Values)
             {
-                spriteBatch.Draw(hex, item.drawnPos, (item.GetStatus() ? Color.Green : Color.Red));
+                spriteBatch.Draw(hex, item.getDrawnPos(), (item.GetStatus() ? Color.Green : Color.Red));
             }
 
-            spriteBatch.Draw(cat, Globals.cat.drawnPos,Color.White);
+            spriteBatch.Draw(cat, Globals.cat.getDrawnPos() ,Color.White);
 
             spriteBatch.End();
 

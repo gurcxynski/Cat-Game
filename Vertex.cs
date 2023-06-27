@@ -11,22 +11,17 @@ namespace Graphs
         public List<Vector2> edges;
         public int vertexID;
         private bool active = true;
-        public Vector2 drawnPos;
 
         public Vertex(Vector2 coords, int id)
         {
             Coordinates = coords;
             edges = new List<Vector2>();
             vertexID = id;
-
-            drawnPos = new Vector2(
-                   Coordinates.X * 50 + (Coordinates.Y % 2 == 0 ? 0 : 25),
-                   Coordinates.Y * 40);
         }
 
         public bool IsInside(Vector2 point)
         {
-            Vector2 relative = new Vector2(point.X - drawnPos.X, point.Y - drawnPos.Y);
+            Vector2 relative = new Vector2(point.X - getDrawnPos().X, point.Y - getDrawnPos().Y);
 
             if (relative.X > 48 || relative.X < 0 || relative.Y > 48 || relative.X < 0) return false;
 
@@ -67,6 +62,13 @@ namespace Graphs
         public bool isAvailable()
         {
             return active && Globals.cat.Position != Coordinates;
+        }
+
+        public Vector2 getDrawnPos()
+        {
+            return new(
+                     Coordinates.X * 50 + (Coordinates.Y % 2 == 0 ? 0 : 25),
+                      Coordinates.Y * 40);
         }
     }
 }

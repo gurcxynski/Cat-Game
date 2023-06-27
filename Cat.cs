@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
 using Graphs;
 
@@ -7,30 +6,22 @@ namespace Cat
 {
     public class Cat
     {
-        public Vector2 Position = new Vector2(Globals.hexes / 2, Globals.hexes / 2);
-        public Vector2 drawnPos;
+        public Vector2 Position = new(Globals.hexes / 2);
 
-        public Cat()
-        {
-            drawnPos = new Vector2(
-                      Position.X * 50 + (Position.Y % 2 == 0 ? 0 : 25),
-                      Position.Y * 40);
-        }
         public void Jump()
         {
-            Queue<Vertex> queue = new Queue<Vertex>();
+            Queue<Vertex> queue = new();
             Graph graph = Globals.gameBoard;
             queue.Enqueue(graph.vertices[new Vector2(-10, -10)]);
-            List<Vector2> explored = new List<Vector2>();
+            List<Vector2> explored = new();
+            List<Vertex> possible = new();
             while(queue.Count > 0)
             {
                 Vertex v = queue.Dequeue();
                 if (v.edges.Contains(Position))
                 {
+                    possible.Add(v);
                     Position = v.Coordinates;
-                    drawnPos = new Vector2(
-                      Position.X * 50 + (Position.Y % 2 == 0 ? 0 : 25),
-                      Position.Y * 40);
                     return;
                 }
                 foreach (var item in v.edges)
@@ -42,6 +33,14 @@ namespace Cat
                     }
                 }
             }
+
+        }
+
+        public Vector2 getDrawnPos()
+        {
+            return new (
+                      Position.X * 50 + (Position.Y % 2 == 0 ? 0 : 25),
+                      Position.Y * 40);
         }
     }
 }

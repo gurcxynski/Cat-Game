@@ -50,7 +50,9 @@ namespace Cat
 
             Random rand = new Random();
 
-            for (int i = 0; i < rand.Next(3, 10); i++)
+            var hexes = Math.Pow(Globals.hexes, 2);
+
+            for (int i = 0; i < rand.Next(10, 30) * 0.01 * hexes; i++)
             {
                 Globals.gameBoard.Deactivate(Globals.gameBoard.vertices[new Vector2(rand.Next(0, Globals.hexes), rand.Next(0, Globals.hexes))]);
 
