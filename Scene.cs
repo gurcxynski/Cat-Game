@@ -1,13 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
-using MonoGame.EasyInput;
 using System;
 using Graphs;
+using MonoGame.Extended.Input.InputListeners;
 
 namespace Cat
 {
     internal class Scene
     {
-        private readonly EasyMouse mouse = new EasyMouse();
+        private readonly MouseListener _mouseListener = new();
 
         public Scene()
         {
@@ -48,31 +48,32 @@ namespace Cat
                 }
             }
 
-            Random rand = new Random();
+            var rand = new Random();
 
             var hexes = Math.Pow(Globals.hexes, 2);
 
             for (int i = 0; i < rand.Next(10, 30) * 0.01 * hexes; i++)
             {
-                Globals.gameBoard.Deactivate(Globals.gameBoard.vertices[new Vector2(rand.Next(0, Globals.hexes), rand.Next(0, Globals.hexes))]);
+                Globals.gameBoard.Deactivate(Globals.gameBoard.vertices[new Vector2(rand.Next(Globals.hexes), rand.Next(Globals.hexes))]);
 
             }
         }
-        public void Update()
+        public void Update(GameTime gameTime)
         {
-            mouse.Update();
-            if (mouse.ReleasedThisFrame(MouseButtons.Left))
+            _mouseListener.Update(gameTime);
+            _mouseListener.MouseClicked += (sender, args) =>
             {
                 foreach (var item in Globals.gameBoard.vertices.Values)
                 {
-                    if (item.isAvailable() && item.IsInside(new Vector2(mouse.Position.X, mouse.Position.Y)))
+                    if (item.isAvailable() && item.IsInside(new Vector2(args.Position.X, args.Position.Y)))
                     {
                         Globals.gameBoard.Deactivate(item);
                         Globals.cat.Jump();
                         break;
-                    }
+                    }/*eeeeeeeeeeebac policje*/
+
                 }
-            }
+            };
             if (Globals.cat.Position == new Vector2(-10, -10))
             {
                 Globals.gameBoard = new Graph();

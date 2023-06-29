@@ -1,13 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Graphs;
-
+using SharpDX.Win32;
+using System.Collections.Generic;
+using System;
 
 namespace Cat
 {
     public static class Globals
     {
-        public static int hexes = 9;
+        public const int hexes = 9;
         public static Graph gameBoard = new();
         public static Cat cat = new();
     }
@@ -16,15 +18,13 @@ namespace Cat
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        Texture2D hex;
-        Texture2D cat;
+        Dictionary<string, Texture2D> textureList;
         readonly Scene scene = new();
 
         public Game1()
         {
-            graphics = new GraphicsDeviceManager(this);
+            graphics = new(this);
             Content.RootDirectory = "Content";
-
         }
         protected override void Initialize()
         {
@@ -40,13 +40,17 @@ namespace Cat
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            hex = Content.Load<Texture2D>("hex");
-            cat = Content.Load<Texture2D>("cat");
+            textureList = new Dictionary<string, Texture2D>
+            {
+                ["hex"] = Content.Load<Texture2D>("hex"),
+                ["cat"] = Content.Load<Texture2D>("cat"),
+            };
+
         }
 
         protected override void Update(GameTime gameTime)
         {
-            scene.Update();
+            scene.Update(gameTime);
             base.Update(gameTime);
         }
         protected override void Draw(GameTime gameTime)
@@ -57,10 +61,10 @@ namespace Cat
 
             foreach (var item in Globals.gameBoard.vertices.Values)
             {
-                spriteBatch.Draw(hex, item.getDrawnPos(), (item.GetStatus() ? Color.Green : Color.Red));
+                spriteBatch.Draw(textureList["hex"], item.getDrawnPos(), (item.GetStatus() ? Color.Green : Color.Red));
             }
 
-            spriteBatch.Draw(cat, Globals.cat.getDrawnPos() ,Color.White);
+            spriteBatch.Draw(textureList["cat"], Globals.cat.getDrawnPos(), Color.White);
 
             spriteBatch.End();
 
