@@ -1,75 +1,96 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Graphs;
-using SharpDX.Win32;
+using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
+using MonoGame.Extended.Content;
+using MonoGame.Extended.Input;
+using MonoGame.Extended.Serialization;
+using MonoGame.Extended.Sprites;
 using System.Collections.Generic;
-using System;
+using System.Diagnostics;
 
-namespace Cat
+namespace Cat_Trap
 {
-    public static class Globals
-    {
-        public const int hexes = 9;
-        public static Graph gameBoard = new();
-        public static Cat cat = new();
-    }
     public class Game1 : Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        private GraphicsDeviceManager _graphics;
+        private SpriteBatch _spriteBatch;
+        private Cat cat;
+        private List<Hexagon> hexagons;
 
-        Dictionary<string, Texture2D> textureList;
-        readonly Scene scene = new();
+        private const int hexes = 11;
 
         public Game1()
         {
-            graphics = new(this);
+            _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-        }
-        protected override void Initialize()
-        {
             IsMouseVisible = true;
 
-            graphics.PreferredBackBufferHeight = 10 + Globals.hexes * 40;
-            graphics.PreferredBackBufferWidth = 25 + Globals.hexes * 50;
-            graphics.ApplyChanges();
-
-            base.Initialize();
-
+            _graphics.PreferredBackBufferHeight = (int)(Helpers.marginOutside * 2 + 0.75 * hexes * (Helpers.height + Helpers.marginInside));
+            _graphics.PreferredBackBufferWidth = (int)(Helpers.marginOutside * 2 + hexes * (Helpers.width + Helpers.marginInside) + Helpers.width / 2);
         }
-        protected override void LoadContent()
+
+        protected override void Initialize()
         {
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-            textureList = new Dictionary<string, Texture2D>
+            hexagons = new();
+            for (int i = 0; i < hexes; i++)
             {
-                ["hex"] = Content.Load<Texture2D>("hex"),
-                ["cat"] = Content.Load<Texture2D>("cat"),
+                for (int j = 0; j < hexes; j++)
+                {
+                    hexagons.Add(new Hexagon(new Vector2(i, j)));
+                }
+            }
+
+            Helpers.mouseListener.MouseUp += (sender, args) =>
+            {
+                var target = hexagons.Find(item => item.IsInside(args.Position.ToVector2()));
+                if (target is null) return;
+                if (args.Button == MouseButton.Right) cat.Jump(target.Position);
+                else target.Active = false;
             };
 
+            base.Initialize();
+        }
+
+        protected override void LoadContent()
+        {
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            var spriteSheet = Content.Load<SpriteSheet>("cat.sf", new JsonContentLoader());
+            var sprite = new AnimatedSprite(spriteSheet);
+
+            sprite.Play("idle");
+            cat = new(sprite);
         }
 
         protected override void Update(GameTime gameTime)
         {
-            scene.Update(gameTime);
+            Helpers.mouseListener.Update(gameTime);
+
+            cat.Update(gameTime);
+
+            if (Keyboard.GetState().IsKeyDown(Keys.D)) { }
+
             base.Update(gameTime);
         }
+
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Gray);
+            GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            spriteBatch.Begin();
+            _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-            foreach (var item in Globals.gameBoard.vertices.Values)
+            foreach (var item in hexagons)
             {
-                spriteBatch.Draw(textureList["hex"], item.getDrawnPos(), (item.GetStatus() ? Color.Green : Color.Red));
+                item.Draw(_spriteBatch);
             }
 
-            spriteBatch.Draw(textureList["cat"], Globals.cat.getDrawnPos(), Color.White);
 
-            spriteBatch.End();
+            cat.Draw(_spriteBatch);
+
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }
-
     }
 }

@@ -1,14 +1,3 @@
-﻿using System;
-
-namespace Cat
-{
-    public static class Program
-    {
-        [STAThread]
-        static void Main()
-        {
-            using (var game = new Game1())
-                game.Run();
-        }
-    }
-}
+﻿
+using var game = new Cat_Trap.Game1();
+game.Run();

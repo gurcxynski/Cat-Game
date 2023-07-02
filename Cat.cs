@@ -1,46 +1,55 @@
 ﻿using Microsoft.Xna.Framework;
-using System.Collections.Generic;
-using Graphs;
+using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.Sprites;
 
-namespace Cat
+namespace Cat_Trap
 {
-    public class Cat
+    internal class Cat
     {
-        public Vector2 Position = new(Globals.hexes / 2);
+        public Vector2 Position { get; set; }
+        public Vector2 DrawnPosition { get => isJumping ? LerpPosition : Helpers.ConvertToPixelPosition(Position); }
 
-        public void Jump()
+        public bool isJumping = false;
+        private Vector2 LerpPosition;
+        Vector2 Destination;
+        double StartedJump;
+
+        public AnimatedSprite Sprite { get; }
+        public Cat(AnimatedSprite sprite) 
         {
-            Queue<Vertex> queue = new();
-            Graph graph = Globals.gameBoard;
-            queue.Enqueue(graph.vertices[new Vector2(-10, -10)]);
-            List<Vector2> explored = new();
-            List<Vertex> possible = new();
-            while(queue.Count > 0)
-            {
-                Vertex v = queue.Dequeue();
-                if (v.edges.Contains(Position))
-                {
-                    possible.Add(v);
-                    Position = v.Coordinates;
-                    return;
-                }
-                foreach (var item in v.edges)
-                {
-                    if (!explored.Contains(item))
-                    {
-                        explored.Add(item);
-                        queue.Enqueue(graph.vertices[item]);
-                    }
-                }
-            }
-
+            Sprite = sprite;
+            Position = new Vector2(5, 5);
         }
-
-        public Vector2 getDrawnPos()
+        public void Update(GameTime gameTime)
         {
-            return new (
-                      Position.X * 50 + (Position.Y % 2 == 0 ? 0 : 25),
-                      Position.Y * 40);
+            Sprite.Update(gameTime);
+
+            if (!isJumping) return;
+
+            if (StartedJump == 0) StartedJump = gameTime.TotalGameTime.TotalMilliseconds;
+
+            var wayCompleted = (gameTime.TotalGameTime.TotalMilliseconds - StartedJump) / Helpers.JumpTime;
+            if (wayCompleted >= 1) { Land(); wayCompleted = 1; }
+            LerpPosition = Vector2.Lerp(Helpers.ConvertToPixelPosition(Position), Helpers.ConvertToPixelPosition(Destination), (float)wayCompleted);
+        }
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(Sprite, DrawnPosition);
+        }
+        public void Jump(Vector2 dest)
+        {
+            if (dest == Position || isJumping) return;
+            Destination = dest;
+            isJumping = true;
+            Sprite.Play("jump");
+        }
+        void Land()
+        {
+            Position = Destination;
+            isJumping = false;
+            Destination = Vector2.Zero;
+            StartedJump = 0;
+            LerpPosition = Vector2.Zero;
         }
     }
 }
