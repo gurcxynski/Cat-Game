@@ -37,17 +37,23 @@ namespace Cat_Trap
             {
                 for (int j = 0; j < hexes; j++)
                 {
-                    hexagons.Add(new Hexagon(new Vector2(i, j)));
+                    hexagons.Add(new Hexagon(new Vector2(j, i)));
                 }
             }
+
+            hexagons.ForEach(hexagon =>
+                                hexagon.Link(hexagons.FindAll(neighbor => 
+                                    Helpers.GetLinking(hexagon.Position).Contains(neighbor.Position))));
 
             Helpers.mouseListener.MouseUp += (sender, args) =>
             {
                 var target = hexagons.Find(item => item.IsInside(args.Position.ToVector2()));
+                var current = hexagons.Find(item => item.Position == cat.Position);
                 if (target is null) return;
-                if (args.Button == MouseButton.Right) cat.Jump(target.Position);
-                else target.Active = false;
+                if (args.Button == MouseButton.Right && target.Linked.Contains(current) && target.Active) cat.Jump(target.Position);
+                if (args.Button == MouseButton.Left) target.Active = false;
             };
+
 
             base.Initialize();
         }

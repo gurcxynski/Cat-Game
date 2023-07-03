@@ -23,6 +23,12 @@ namespace Cat_Trap
                 unitVector.Rotate(11f / 6 * MathHelper.Pi)
         };
 
+        // linking
+        public static List<Vector2> GetLinking(Vector2 position) => new(){
+                position + new Vector2(1, 0),
+                position + new Vector2(0, 1),
+                position + new Vector2(position.Y % 2 == 0 ? -1 : 1, 1)
+        };
 
         // layout
         public const float marginInside = 6;

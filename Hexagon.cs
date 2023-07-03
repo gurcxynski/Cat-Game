@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Shapes;
-
+using System.Collections.Generic;
 
 namespace Cat_Trap
 {
@@ -17,6 +17,8 @@ namespace Cat_Trap
 
         public Polygon Bounds;
 
+        public List<Hexagon> Linked { get; }
+
         public bool Active { get; set; } = true;
 
         public Hexagon(Vector2 position)
@@ -24,6 +26,19 @@ namespace Cat_Trap
             Position = position;
                         
             Bounds = new Polygon(Helpers.vertices);
+
+            Linked = new List<Hexagon>();
+        }
+        public void Link(Hexagon hexagon)
+        {
+            if (hexagon is null || hexagon == this) return;
+            Linked.Add(hexagon);
+        }
+        public void Link(List<Hexagon> hexagons)
+        {
+            if (hexagons is null) return;
+            hexagons.ForEach(hexagon => { this.Link(hexagon); hexagon.Link(this); });
+            
         }
         public void Draw(SpriteBatch spriteBatch)
         {
