@@ -50,6 +50,7 @@ namespace Cat_Trap
             Destination = Vector2.Zero;
             StartedJump = 0;
             LerpPosition = Vector2.Zero;
+            Sprite.Play("idle");
         }
     }
 }

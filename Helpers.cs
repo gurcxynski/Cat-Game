@@ -9,6 +9,9 @@ namespace Cat_Trap
     {
         public static readonly MouseListener mouseListener = new();
 
+        // board
+        public const int hexes = 11;
+
         // hexagons
         public const float height = 60;
         public const float width = height * 0.866f; // sqrt(3) / 2

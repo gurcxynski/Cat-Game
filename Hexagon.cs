@@ -31,13 +31,14 @@ namespace Cat_Trap
         }
         public void Link(Hexagon hexagon)
         {
-            if (hexagon is null || hexagon == this) return;
+            if (hexagon is null || hexagon == this || Linked.Contains(hexagon)) return;
             Linked.Add(hexagon);
+            hexagon.Link(this);
         }
         public void Link(List<Hexagon> hexagons)
         {
             if (hexagons is null) return;
-            hexagons.ForEach(hexagon => { this.Link(hexagon); hexagon.Link(this); });
+            hexagons.ForEach(hexagon => { hexagon.Link(this); });
             
         }
         public void Draw(SpriteBatch spriteBatch)
