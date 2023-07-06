@@ -2,9 +2,20 @@
 using MonoGame.Extended;
 using MonoGame.Extended.Input.InputListeners;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 
 namespace Cat_Trap
 {
+    enum Direction
+    {
+        left,
+        leftUp,
+        rightUp,
+        right,
+        rightDown,
+        leftDown
+    }
     internal class Helpers
     {
         public static readonly MouseListener mouseListener = new();
@@ -26,6 +37,31 @@ namespace Cat_Trap
                 unitVector.Rotate(11f / 6 * MathHelper.Pi)
         };
 
+        // jump direction
+        public static Direction DetermineJumpDirection(Vector2 from, Vector2 to)
+        {
+            var relative = to - from;
+            
+            if (relative == Vector2.UnitX) return Direction.right;
+            if (relative == -Vector2.UnitX) return Direction.left;
+            switch (from.Y % 2 == 0)
+            {
+                case true:
+                    if (relative == -Vector2.UnitY) return Direction.right; //Up
+                    if (relative == new Vector2(-1, -1)) return Direction.left; //Up
+                    if (relative == Vector2.UnitY) return Direction.right; //Down
+                    if (relative == new Vector2(-1, 1)) return Direction.left; //Down
+                    break;
+                case false:
+                    if (relative == -Vector2.UnitY) return Direction.left; //Up
+                    if (relative == new Vector2(1, -1)) return Direction.right; //Up
+                    if (relative == Vector2.UnitY) return Direction.left; //Down
+                    if (relative == new Vector2(1, 1)) return Direction.right; //Down
+                    break;
+            }
+            throw new InvalidDataException("Vectors not neighboring!");
+        }
+
         // linking
         public static List<Vector2> GetLinking(Vector2 position) => new(){
                 position + new Vector2(1, 0),
@@ -36,6 +72,9 @@ namespace Cat_Trap
         // layout
         public const float marginInside = 6;
         public const float marginOutside = 25;
+
+        // border
+        public static bool IsBorderHex(Vector2 position) => position.X == 0 || position.Y == 0 || position.X == hexes - 1 || position.Y == hexes - 1;
     
         // get pixel position of the center of given hexagon
         public static Vector2 ConvertToPixelPosition(Vector2 GridPosition)
@@ -46,5 +85,10 @@ namespace Cat_Trap
 
         //time of jump animation in ms
         public const int JumpTime = 500;
+
+        public static void GenerateValues()
+        {
+
+        }
     }
 }

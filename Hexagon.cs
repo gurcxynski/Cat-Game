@@ -12,6 +12,8 @@ namespace Cat_Trap
         const float height = Helpers.height;
         const float width = Helpers.width;
 
+        public int value = int.MaxValue;
+
         public Vector2 Position { get; }
         public Vector2 DrawnPosition { get => Helpers.ConvertToPixelPosition(Position); }
 
@@ -40,6 +42,11 @@ namespace Cat_Trap
             if (hexagons is null) return;
             hexagons.ForEach(hexagon => { hexagon.Link(this); });
             
+        }
+        public void Unlink(Hexagon hexagon)
+        {
+            if (hexagon is null || hexagon == this || !Linked.Contains(hexagon)) return;
+            Linked.Remove(hexagon);
         }
         public void Draw(SpriteBatch spriteBatch)
         {

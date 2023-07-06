@@ -1,17 +1,22 @@
 {
   "textureAtlas": {
-    "texture": "..\\..\\..\\..\\Desktop\\cat.png",
+    "texture": "cat.png",
     "regionWidth": 50,
     "regionHeight": 50
   },
   "cycles": {
     "idle": {
-      "frames": [0],
+      "frames": [3],
       "isLooping": false,
       "frameDuration": 0.2
     },
-    "jump": {
-      "frames": [1,2,0],
+    "left": {
+      "frames": [5,4,3],
+      "isLooping": false,
+      "frameDuration": 0.2
+    },
+    "right": {
+      "frames": [1,2,3],
       "isLooping": false,
       "frameDuration": 0.2
     }

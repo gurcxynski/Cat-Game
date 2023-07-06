@@ -49,8 +49,7 @@ namespace Cat_Trap
                 hexagon.Link(hexagons.FindAll(neighbor =>
                     Helpers.GetLinking(hexagon.Position).Contains(neighbor.Position)));
 
-                if (hexagon.Position.X == 0 || hexagon.Position.Y == 0 || hexagon.Position.X == Helpers.hexes - 1 || hexagon.Position.Y == Helpers.hexes - 1) 
-                    hexagon.Link(hexagons[0]);
+                if (Helpers.IsBorderHex(hexagon.Position)) hexagon.Link(hexagons[0]);
             });
 
             Helpers.mouseListener.MouseUp += (sender, args) =>
@@ -58,12 +57,16 @@ namespace Cat_Trap
                 var target = hexagons.Find(item => item.IsInside(args.Position.ToVector2()));
                 var current = hexagons.Find(item => item.Position == cat.Position);
 
-                if (target is not null && args.Button == MouseButton.Left && target.Active && target.Position != cat.Position && !cat.isJumping)
+                if (target is not null && args.Button == MouseButton.Left && target.Active && target.Position != cat.Position && !cat.isJumping && !cat.escaped)
                 {
                     target.Active = false;
+                    target.Linked.ForEach(hex => hex.Unlink(target));
+                    target.Linked.Clear();
+
                     var catHex = hexagons.Find(item => item.Position == cat.Position);
                     var possible = from hex in hexagons where catHex.Linked.Contains(hex) && hex.Active select hex.Position;
-                    cat.Jump(possible.ToArray()[new Random().Next(possible.Count())]);
+                    if (Helpers.IsBorderHex(cat.Position)) cat.JumpOff(); 
+                    else cat.Jump(possible.ToArray()[new Random().Next(possible.Count())]);
                 }
             };
 
@@ -87,8 +90,6 @@ namespace Cat_Trap
             Helpers.mouseListener.Update(gameTime);
 
             cat.Update(gameTime);
-
-            if (Keyboard.GetState().IsKeyDown(Keys.D)) {}
 
             base.Update(gameTime);
         }
