@@ -1,22 +1,22 @@
 {
   "textureAtlas": {
     "texture": "cat.png",
-    "regionWidth": 50,
-    "regionHeight": 50
+    "regionWidth": 52,
+    "regionHeight": 60
   },
   "cycles": {
-    "idle": {
-      "frames": [3],
+    "right": {
+      "frames": [0,1,2,3,4,5,6],
       "isLooping": false,
-      "frameDuration": 0.2
+      "frameDuration": 0.1
     },
     "left": {
-      "frames": [5,4,3],
+      "frames": [11,10,9,8,15,14,13],
       "isLooping": false,
-      "frameDuration": 0.2
+      "frameDuration": 0.1
     },
-    "right": {
-      "frames": [1,2,3],
+    "idle": {
+      "frames": [7],
       "isLooping": false,
       "frameDuration": 0.2
     }

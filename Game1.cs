@@ -1,14 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using MonoGame.Extended;
 using MonoGame.Extended.Content;
 using MonoGame.Extended.Input;
+using MonoGame.Extended.Input.InputListeners;
 using MonoGame.Extended.Serialization;
 using MonoGame.Extended.Sprites;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Cat_Trap
@@ -19,7 +17,6 @@ namespace Cat_Trap
         private SpriteBatch _spriteBatch;
         private Cat cat;
         private List<Hexagon> hexagons;
-
 
         public Game1()
         {
@@ -35,7 +32,7 @@ namespace Cat_Trap
         {
             hexagons = new()
             {
-                new Hexagon(new Vector2(-1, -1))
+                Helpers.target
             };
             for (int i = 0; i < Helpers.hexes; i++)
             {
@@ -52,27 +49,54 @@ namespace Cat_Trap
                 if (Helpers.IsBorderHex(hexagon.Position)) hexagon.Link(hexagons[0]);
             });
 
-            Helpers.mouseListener.MouseUp += (sender, args) =>
-            {
-                var target = hexagons.Find(item => item.IsInside(args.Position.ToVector2()));
-                var current = hexagons.Find(item => item.Position == cat.Position);
+            hexagons.ForEach(hexagon => { if (Helpers.rng.NextDouble() < 0.33) hexagon.Deactivate(); });
 
-                if (target is not null && args.Button == MouseButton.Left && target.Active && target.Position != cat.Position && !cat.isJumping && !cat.escaped)
-                {
-                    target.Active = false;
-                    target.Linked.ForEach(hex => hex.Unlink(target));
-                    target.Linked.Clear();
-
-                    var catHex = hexagons.Find(item => item.Position == cat.Position);
-                    var possible = from hex in hexagons where catHex.Linked.Contains(hex) && hex.Active select hex.Position;
-                    if (Helpers.IsBorderHex(cat.Position)) cat.JumpOff(); 
-                    else cat.Jump(possible.ToArray()[new Random().Next(possible.Count())]);
-                }
-            };
-
+            Helpers.mouseListener.MouseUp += OnClick;
+            
+            GenerateWeights();
 
             base.Initialize();
         }
+
+        void OnClick(object sender, MouseEventArgs args)
+        {
+            var target = hexagons.Find(item => item.IsInside(args.Position.ToVector2()));
+            var current = GetHexByPosition(cat.Position);
+
+            if (target is not null && args.Button == MouseButton.Left && target.Active && target.Position != cat.Position && !cat.isJumping && !cat.escaped)
+            {
+                target.Deactivate();
+
+                GenerateWeights();
+
+                var possible = 
+                    from hex in hexagons 
+                    where current.Linked.Contains(hex) && hex.Active 
+                    select hex;
+
+                int fastest = int.MaxValue;
+                var best = new List<Vector2>();
+
+                foreach (var item in possible)
+                {
+                    if (item.Value < fastest)
+                    {
+                        fastest = item.Value;
+                        best = new();
+                    }
+                    if (item.Value == fastest) best.Add(item.Position);
+                }
+                cat.Jump(best[Helpers.rng.Next(best.Count)]);
+            }
+        }
+
+        void GenerateWeights()
+        {
+            hexagons.ForEach(hex => hex.ResetValue());
+            hexagons[0].GenerateValue(0);
+        }
+
+        Hexagon GetHexByPosition(Vector2 pos) => hexagons.Find(item => pos == item.Position);
 
         protected override void LoadContent()
         {

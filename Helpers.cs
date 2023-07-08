@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Input.InputListeners;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -19,6 +21,9 @@ namespace Cat_Trap
     internal class Helpers
     {
         public static readonly MouseListener mouseListener = new();
+
+        // random number generator
+        public static Random rng = new();
 
         // board
         public const int hexes = 11;
@@ -73,6 +78,9 @@ namespace Cat_Trap
         public const float marginInside = 6;
         public const float marginOutside = 25;
 
+        // target hexagon
+        public static Hexagon target = new(new Vector2(-10, -10));
+
         // border
         public static bool IsBorderHex(Vector2 position) => position.X == 0 || position.Y == 0 || position.X == hexes - 1 || position.Y == hexes - 1;
     
@@ -84,11 +92,7 @@ namespace Cat_Trap
         }
 
         //time of jump animation in ms
-        public const int JumpTime = 500;
+        public const int JumpTime = 800;
 
-        public static void GenerateValues()
-        {
-
-        }
     }
 }

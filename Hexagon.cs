@@ -12,7 +12,7 @@ namespace Cat_Trap
         const float height = Helpers.height;
         const float width = Helpers.width;
 
-        public int value = int.MaxValue;
+        public int Value { get; private set; } = int.MaxValue;
 
         public Vector2 Position { get; }
         public Vector2 DrawnPosition { get => Helpers.ConvertToPixelPosition(Position); }
@@ -21,7 +21,7 @@ namespace Cat_Trap
 
         public List<Hexagon> Linked { get; }
 
-        public bool Active { get; set; } = true;
+        public bool Active { get; private set; } = true;
 
         public Hexagon(Vector2 position)
         {
@@ -63,5 +63,19 @@ namespace Cat_Trap
             return false;
 
         }
+        public void Deactivate()
+        {
+            Active = false;
+            Linked.ForEach(hex => hex.Unlink(this));
+            Linked.Clear();
+        }
+        public void GenerateValue(int arg)
+        {
+            if (arg > Value) return;
+            Value = arg;
+            Linked.ForEach(hex => hex.GenerateValue(Value + 1));
+        }
+
+        public void ResetValue() => Value = int.MaxValue;
     }
 }

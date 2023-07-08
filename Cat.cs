@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
 using MonoGame.Extended.Sprites;
 using System;
 using System.Diagnostics;
@@ -45,6 +46,11 @@ namespace Cat_Trap
         public void Jump(Vector2 dest)
         {
             if (dest == Position || isJumping) return;
+            if (dest == Helpers.target.Position)
+            {
+                JumpOff();
+                return;
+            }
             Destination = dest;
             isJumping = true;
 
@@ -61,7 +67,7 @@ namespace Cat_Trap
             Sprite.Play("idle");
         }
 
-        public void JumpOff()
+        void JumpOff()
         {
             if (Position.X == 0) Jump(Position - Vector2.UnitX);
             else if (Position.Y == 0) Jump(Position - Vector2.UnitY);
