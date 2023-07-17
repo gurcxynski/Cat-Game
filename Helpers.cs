@@ -1,10 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Input.InputListeners;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 
 namespace Cat_Trap
@@ -27,6 +25,11 @@ namespace Cat_Trap
 
         // board
         public const int hexes = 11;
+
+        // fraction of hexes starting deactivated
+        public static double fraction = 0.2;
+
+        public static Vector2 CatStart = new(hexes / 2);
 
         // hexagons
         public const float height = 60;
@@ -74,6 +77,7 @@ namespace Cat_Trap
                 position + new Vector2(position.Y % 2 == 0 ? -1 : 1, 1)
         };
 
+
         // layout
         public const float marginInside = 6;
         public const float marginOutside = 25;
@@ -92,7 +96,7 @@ namespace Cat_Trap
         }
 
         //time of jump animation in ms
-        public const int JumpTime = 800;
+        public const int JumpTime = 500;
 
     }
 }

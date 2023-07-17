@@ -16,6 +16,7 @@ namespace Cat_Trap
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private Cat cat;
+        private Menu menu;
         private List<Hexagon> hexagons;
 
         public Game1()
@@ -30,6 +31,7 @@ namespace Cat_Trap
 
         protected override void Initialize()
         {
+            menu = new();
             hexagons = new()
             {
                 Helpers.target
@@ -46,10 +48,10 @@ namespace Cat_Trap
                 hexagon.Link(hexagons.FindAll(neighbor =>
                     Helpers.GetLinking(hexagon.Position).Contains(neighbor.Position)));
 
-                if (Helpers.IsBorderHex(hexagon.Position)) hexagon.Link(hexagons[0]);
+                if (Helpers.IsBorderHex(hexagon.Position)) hexagon.Link(Helpers.target);
             });
 
-            hexagons.ForEach(hexagon => { if (Helpers.rng.NextDouble() < 0.33) hexagon.Deactivate(); });
+            hexagons.ForEach(hexagon => { if (Helpers.rng.NextDouble() < Helpers.fraction && hexagon.Position != Helpers.CatStart && hexagon != Helpers.target) hexagon.Deactivate(); });
 
             Helpers.mouseListener.MouseUp += OnClick;
             
@@ -63,15 +65,15 @@ namespace Cat_Trap
             var target = hexagons.Find(item => item.IsInside(args.Position.ToVector2()));
             var current = GetHexByPosition(cat.Position);
 
-            if (target is not null && args.Button == MouseButton.Left && target.Active && target.Position != cat.Position && !cat.isJumping && !cat.escaped)
+            if (target is not null && args.Button == MouseButton.Left && target.Active && target.Position != cat.Position && !Cat.IsJumping && !Cat.Escaped)
             {
                 target.Deactivate();
 
                 GenerateWeights();
 
-                var possible = 
-                    from hex in hexagons 
-                    where current.Linked.Contains(hex) && hex.Active 
+                var possible =
+                    from hex in hexagons
+                    where current.Linked.Contains(hex) && hex.Active
                     select hex;
 
                 int fastest = int.MaxValue;
@@ -86,6 +88,10 @@ namespace Cat_Trap
                     }
                     if (item.Value == fastest) best.Add(item.Position);
                 }
+                if (fastest == int.MaxValue)
+                {
+                    StateMachine.GameOver(); return;
+                }
                 cat.Jump(best[Helpers.rng.Next(best.Count)]);
             }
         }
@@ -93,7 +99,7 @@ namespace Cat_Trap
         void GenerateWeights()
         {
             hexagons.ForEach(hex => hex.ResetValue());
-            hexagons[0].GenerateValue(0);
+            Helpers.target.GenerateValue(0);
         }
 
         Hexagon GetHexByPosition(Vector2 pos) => hexagons.Find(item => pos == item.Position);
@@ -113,8 +119,8 @@ namespace Cat_Trap
         {
             Helpers.mouseListener.Update(gameTime);
 
-            cat.Update(gameTime);
-
+            if (StateMachine.State != StateMachine.GameState.Menu) cat.Update(gameTime);
+            else menu.Update();
             base.Update(gameTime);
         }
 
@@ -130,7 +136,8 @@ namespace Cat_Trap
             }
 
 
-            cat.Draw(_spriteBatch);
+            if (StateMachine.State != StateMachine.GameState.Menu) cat.Draw(_spriteBatch);
+            else menu.Draw(_spriteBatch);
 
             _spriteBatch.End();
 
