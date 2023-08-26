@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.Input.InputListeners;
 using System;
@@ -94,6 +95,10 @@ namespace Cat_Trap
             return new(GridPosition.X * (width + marginInside) + width / 2 + marginOutside + (GridPosition.Y % 2 == 0 ? 0 : (width + marginInside) / 2),
                        GridPosition.Y * 0.75f * (height + marginInside) + height / 2 + marginOutside);
         }
+
+        // textures
+        public static Texture2D newGameButton;
+
 
         //time of jump animation in ms
         public const int JumpTime = 500;

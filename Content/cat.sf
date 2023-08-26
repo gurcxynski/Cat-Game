@@ -5,11 +5,6 @@
     "regionHeight": 60
   },
   "cycles": {
-    "idle": {
-      "frames": [4],
-      "isLooping": false,
-      "frameDuration": 0.2
-    },
     "right": {
       "frames": [0,1,2,3,4],
       "isLooping": false,
@@ -19,6 +14,11 @@
       "frames": [9,8,7,6,5],
       "isLooping": false,
       "frameDuration": 0.1
+    },
+    "idle": {
+      "frames": [18,19,12,12,12,13,14,19,12,12,12],
+      "isLooping": true,
+      "frameDuration": 0.3
     }
   }
 }

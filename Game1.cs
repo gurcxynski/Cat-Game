@@ -15,9 +15,9 @@ namespace Cat_Trap
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private Cat cat;
-        private Menu menu;
-        private List<Hexagon> hexagons;
+        private static Cat cat;
+        public static Menu menu;
+        private static List<Hexagon> hexagons;
 
         public Game1()
         {
@@ -31,7 +31,18 @@ namespace Cat_Trap
 
         protected override void Initialize()
         {
+            SetUp();
+
             menu = new();
+            
+            Helpers.mouseListener.MouseUp += OnClick;
+
+            GenerateWeights();
+
+            base.Initialize();
+        }
+        public static void SetUp()
+        {
             hexagons = new()
             {
                 Helpers.target
@@ -53,15 +64,11 @@ namespace Cat_Trap
 
             hexagons.ForEach(hexagon => { if (Helpers.rng.NextDouble() < Helpers.fraction && hexagon.Position != Helpers.CatStart && hexagon != Helpers.target) hexagon.Deactivate(); });
 
-            Helpers.mouseListener.MouseUp += OnClick;
-            
-            GenerateWeights();
-
-            base.Initialize();
+            cat?.Reset();
         }
-
         void OnClick(object sender, MouseEventArgs args)
         {
+            if (StateMachine.State != StateMachine.GameState.Awaiting) return;
             var target = hexagons.Find(item => item.IsInside(args.Position.ToVector2()));
             var current = GetHexByPosition(cat.Position);
 
@@ -96,13 +103,13 @@ namespace Cat_Trap
             }
         }
 
-        void GenerateWeights()
+        static void GenerateWeights()
         {
             hexagons.ForEach(hex => hex.ResetValue());
             Helpers.target.GenerateValue(0);
         }
 
-        Hexagon GetHexByPosition(Vector2 pos) => hexagons.Find(item => pos == item.Position);
+        static Hexagon GetHexByPosition(Vector2 pos) => hexagons.Find(item => pos == item.Position);
 
         protected override void LoadContent()
         {
@@ -113,6 +120,8 @@ namespace Cat_Trap
 
             sprite.Play("idle");
             cat = new(sprite);
+
+            Helpers.newGameButton = Content.Load<Texture2D>("button");
         }
 
         protected override void Update(GameTime gameTime)
@@ -120,7 +129,7 @@ namespace Cat_Trap
             Helpers.mouseListener.Update(gameTime);
 
             if (StateMachine.State != StateMachine.GameState.Menu) cat.Update(gameTime);
-            else menu.Update();
+
             base.Update(gameTime);
         }
 

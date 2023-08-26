@@ -1,4 +1,8 @@
-﻿namespace Cat_Trap
+﻿using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
+
+namespace Cat_Trap
 {
     internal static class StateMachine
     {
@@ -26,5 +30,11 @@
         {
             State = GameState.CatEscaping;
         }
+        public static void NewGame()
+        {
+            Game1.SetUp();
+            State = GameState.Awaiting;
+        }
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Sprites;
+using System.Diagnostics;
 
 namespace Cat_Trap
 {
@@ -22,13 +23,20 @@ namespace Cat_Trap
             Sprite = sprite;
             Position = Helpers.CatStart;
         }
+        public void Reset()
+        {
+            Position = Helpers.CatStart;
+            Sprite.Alpha = 1;
+            Sprite.Play("idle");
+        }
         public void Update(GameTime gameTime)
         {
+            Debug.WriteLine(Sprite.Alpha);
             Sprite.Update(gameTime);
 
             if (Escaped) Sprite.Alpha -= (float)(0.0015 * gameTime.ElapsedGameTime.Milliseconds);
 
-            if (Escaped && Sprite.Alpha <= 0)
+            if (Escaped && Sprite.Alpha <= 0.3)
             {
                 StateMachine.GameOver();
             }
