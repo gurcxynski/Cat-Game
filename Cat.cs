@@ -28,10 +28,12 @@ namespace Cat_Trap
             Position = Helpers.CatStart;
             Sprite.Alpha = 1;
             Sprite.Play("idle");
+            Destination = Vector2.Zero;
+            StartedJump = 0;
+            LerpPosition = Vector2.Zero;
         }
         public void Update(GameTime gameTime)
         {
-            Debug.WriteLine(Sprite.Alpha);
             Sprite.Update(gameTime);
 
             if (Escaped) Sprite.Alpha -= (float)(0.0015 * gameTime.ElapsedGameTime.Milliseconds);
@@ -81,8 +83,8 @@ namespace Cat_Trap
         {
             if (Position.X == 0) Jump(Position - Vector2.UnitX);
             else if (Position.Y == 0) Jump(Position - Vector2.UnitY);
-            else if(Position.X == Helpers.hexes - 1) Jump(Position + Vector2.UnitX);
-            else if(Position.Y == Helpers.hexes - 1) Jump(Position + Vector2.UnitY);
+            else if (Position.X == Helpers.hexes - 1) Jump(Position + Vector2.UnitX);
+            else if (Position.Y == Helpers.hexes - 1) Jump(Position + Vector2.UnitY);
             StateMachine.Escaped();
         }
     }

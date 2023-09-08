@@ -33,18 +33,22 @@ namespace Cat_Trap
         public static Vector2 CatStart = new(hexes / 2);
 
         // hexagons
-        public const float height = 60;
-        public const float width = height * 0.866f; // sqrt(3) / 2
+        public const float hexHeight = 60;
+        public const float hexWidth = hexHeight * 0.866f; // sqrt(3) / 2
 
-        static readonly Vector2 unitVector = new (height / 2, 0);
+        static readonly Vector2 unitVector = new (hexHeight / 2, 0);
         public static readonly List<Vector2> vertices = new(){
-                unitVector.Rotate(1f / 6 * MathHelper.Pi),
-                unitVector.Rotate(3f / 6 * MathHelper.Pi),
-                unitVector.Rotate(5f / 6 * MathHelper.Pi),
-                unitVector.Rotate(7f / 6 * MathHelper.Pi),
-                unitVector.Rotate(9f / 6 * MathHelper.Pi),
+                unitVector.Rotate(1f  / 6 * MathHelper.Pi),
+                unitVector.Rotate(3f  / 6 * MathHelper.Pi),
+                unitVector.Rotate(5f  / 6 * MathHelper.Pi),
+                unitVector.Rotate(7f  / 6 * MathHelper.Pi),
+                unitVector.Rotate(9f  / 6 * MathHelper.Pi),
                 unitVector.Rotate(11f / 6 * MathHelper.Pi)
         };
+
+        // window sizes
+        public const int windowHeight = (int)(marginOutside * 2 + 0.75 * hexes * (hexHeight + marginInside));
+        public const int windowWidth = (int)(marginOutside * 2 + hexes * (hexWidth + marginInside) + hexWidth / 2);
 
         // jump direction
         public static Direction DetermineJumpDirection(Vector2 from, Vector2 to)
@@ -92,13 +96,16 @@ namespace Cat_Trap
         // get pixel position of the center of given hexagon
         public static Vector2 ConvertToPixelPosition(Vector2 GridPosition)
         {
-            return new(GridPosition.X * (width + marginInside) + width / 2 + marginOutside + (GridPosition.Y % 2 == 0 ? 0 : (width + marginInside) / 2),
-                       GridPosition.Y * 0.75f * (height + marginInside) + height / 2 + marginOutside);
+            return new(GridPosition.X * (hexWidth + marginInside) + hexWidth / 2 + marginOutside + (GridPosition.Y % 2 == 0 ? 0 : (hexWidth + marginInside) / 2),
+                       GridPosition.Y * 0.75f * (hexHeight + marginInside) + hexHeight / 2 + marginOutside);
         }
 
         // textures
         public static Texture2D newGameButton;
 
+        // button size
+        public static int buttonWidth = (int)(windowWidth * 0.35);
+        public static int buttonHeight = (int)(windowHeight * 0.15);
 
         //time of jump animation in ms
         public const int JumpTime = 500;

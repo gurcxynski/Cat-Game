@@ -3,14 +3,15 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.Input.InputListeners;
-using System;
 
 namespace Cat_Trap
 {
     public class Menu
     {
-        RectangleF buttonBounds = new(100, 100, 300, 100);
-        bool Active => StateMachine.State == StateMachine.GameState.Menu;
+        RectangleF buttonBounds = new((Helpers.windowWidth - Helpers.buttonWidth) / 2, (Helpers.windowHeight - Helpers.buttonHeight) / 2,
+            Helpers.buttonWidth, Helpers.buttonHeight);
+
+        static bool Active => StateMachine.State == StateMachine.GameState.Menu;
         bool Hovered => buttonBounds.Contains(Mouse.GetState().Position) && Active;
         public Menu() 
         {
@@ -18,7 +19,7 @@ namespace Cat_Trap
         }
         internal void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Helpers.newGameButton, (Rectangle)buttonBounds, Hovered ? Color.Red : Color.White);
+            spriteBatch.Draw(Helpers.newGameButton, (Rectangle)buttonBounds, Hovered ? new Color(230, 230, 230, 200) : new Color(255, 255, 255, 230));
         }
 
         void HandleClick(object sender, MouseEventArgs e)

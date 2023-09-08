@@ -16,8 +16,9 @@ namespace Cat_Trap
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private static Cat cat;
-        public static Menu menu;
         private static List<Hexagon> hexagons;
+
+        internal static Menu menu;
 
         public Game1()
         {
@@ -25,16 +26,14 @@ namespace Cat_Trap
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
-            _graphics.PreferredBackBufferHeight = (int)(Helpers.marginOutside * 2 + 0.75 * Helpers.hexes * (Helpers.height + Helpers.marginInside));
-            _graphics.PreferredBackBufferWidth = (int)(Helpers.marginOutside * 2 + Helpers.hexes * (Helpers.width + Helpers.marginInside) + Helpers.width / 2);
+            _graphics.PreferredBackBufferHeight = Helpers.windowHeight;
+            _graphics.PreferredBackBufferWidth = Helpers.windowWidth;
         }
 
         protected override void Initialize()
         {
             SetUp();
-
-            menu = new();
-            
+                        
             Helpers.mouseListener.MouseUp += OnClick;
 
             GenerateWeights();

@@ -9,8 +9,8 @@ namespace Cat_Trap
 {
     internal class Hexagon
     {
-        const float height = Helpers.height;
-        const float width = Helpers.width;
+        const float height = Helpers.hexHeight;
+        const float width = Helpers.hexWidth;
 
         public int Value { get; private set; } = int.MaxValue;
 

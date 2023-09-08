@@ -16,6 +16,7 @@ namespace Cat_Trap
         public static GameState State = GameState.Awaiting; 
         public static void GameOver()
         {
+            Game1.menu ??= new();
             State = GameState.Menu;
         }
         public static void BeginJump()
