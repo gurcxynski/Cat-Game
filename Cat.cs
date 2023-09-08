@@ -8,7 +8,7 @@ namespace Cat_Trap
     internal class Cat
     {
         public Vector2 Position { get; set; }
-        public Vector2 DrawnPosition { get => IsJumping ? LerpPosition : Helpers.ConvertToPixelPosition(Position); }
+        public Vector2 DrawnPosition { get => (IsJumping || Escaped) ? LerpPosition : Helpers.ConvertToPixelPosition(Position); }
 
         public static bool IsJumping { get => StateMachine.State == StateMachine.GameState.CatJumping; }
         public static bool Escaped { get => StateMachine.State == StateMachine.GameState.CatEscaping; }
@@ -81,10 +81,11 @@ namespace Cat_Trap
 
         void JumpOff()
         {
-            if (Position.X == 0) Jump(Position - Vector2.UnitX);
-            else if (Position.Y == 0) Jump(Position - Vector2.UnitY);
-            else if (Position.X == Helpers.hexes - 1) Jump(Position + Vector2.UnitX);
-            else if (Position.Y == Helpers.hexes - 1) Jump(Position + Vector2.UnitY);
+            if (Position.X == 0)                        Jump(Position - Vector2.UnitX);
+            else if (Position.Y == 0)                   Jump(Position - Vector2.UnitY);
+            else if (Position.X == Helpers.hexes - 1)   Jump(Position + Vector2.UnitX);
+            else if (Position.Y == Helpers.hexes - 1)   Jump(Position + Vector2.UnitY);
+
             StateMachine.Escaped();
         }
     }
